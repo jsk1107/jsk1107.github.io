@@ -1,0 +1,74 @@
+<head>
+	<meta charset="utf-8">
+	<title>{% if page.title %}{{ page.title }} |{% endif %} {{ site.theme_settings.title }}</title>
+	<meta name="author" content="QQQ">
+	<meta name="keywords" content="AI, Statistics, ComputerScience, Pytorch, Tensorflow, Classification, ObjectDetection, Segmentation, Recognition, ComputerVision">
+	<meta name="title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.theme_settings.title }}{% endif %}">
+	<meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.theme_settings.description }}{% endif %}">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- opengragh-->
+	<meta property="og:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.theme_settings.title }}{% endif %}">
+	<meta property="og:description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.theme_settings.description }}{% endif %}">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
+
+	<!-- jquery -->
+	<script type="text/javascript" src="/assets/lib/jquery.js"></script>
+	
+	<!-- jquery.lazy -->
+	<script type="text/javascript" src="/assets/lib/jquery.lazyload.js"></script>
+	
+	<!-- velocity.us -->
+	<script type="text/javascript" src="/assets/lib/velocity.ui.js"></script>
+	
+	<!-- velocity.min -->
+	<script type="text/javascript" src="/assets/lib/velocity.min.js"></script>
+	
+	<!-- motion -->
+	<script type="text/javascript" src="/assets/js/motion.js"></script>
+
+	<!-- burger -->
+	<script type="text/javascript" src="/assets/js/burger.js"></script>
+	
+	<!-- burger_menu -->
+	<script type="text/javascript" src="/assets/js/burger_menu.js"></script>
+
+	<!--Favicon-->
+	<link rel="shortcut icon" href="{{ site.baseurl }}/{{ site.theme_settings.favicon }}" type="image/x-icon">
+
+	<!-- Canonical -->
+	<link rel="canonical" href="{{ page.url | replace:'index.html','' | relative_url }}">
+
+	<!-- RSS -->
+	<link rel="alternate" type="application/atom+xml" title="{{ site.theme_settings.title }}" href="{{ "/feed.xml" | relative_url }}" />
+
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+	<!-- Google Fonts -->
+	{% if site.theme_settings.google_fonts %}
+	<link href="//fonts.googleapis.com/css?family={{ site.theme_settings.google_fonts }}" rel="stylesheet" type="text/css">
+	{% endif %}
+
+	<!-- KaTeX -->
+	{% if site.theme_settings.katex and page.id %}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.css" integrity="sha384-BTL0nVi8DnMrNdMQZG1Ww6yasK9ZGnUxL1ZWukXQ7fygA1py52yPp9W4wrR00VML" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.js" integrity="sha384-y6SGsNt7yZECc4Pf86XmQhC4hG2wxL6Upkt9N1efhFxfh6wlxBH0mJiTE8XYclC1" crossorigin="anonymous"></script>
+	{% endif %}
+
+	<!-- Google Analytics -->
+	{% if site.theme_settings.google_analytics %}
+	<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', '{{ site.theme_settings.google_analytics }}', 'auto');
+	ga('send', 'pageview');
+	</script>
+	{% endif %}
+
+</head>

@@ -1,0 +1,94 @@
+<header class="site-header">
+
+		<div class="header-icon">
+				<a href="{{ site.baseurl }}/">{{ site.theme_settings.title }}</a>
+		</div>
+
+		<nav class="header-nav">
+			{% if site.local_search.enable %}
+				{% assign hasSearch = true %}
+			{% endif %}
+			<ul id="menu" class="menu">
+	
+					<li class="menu-item menu-item-Data Base" style="opacity: 1; transform: translateY(0px);"><a href="/">Paper</a>
+						<ul>
+							<li><a href="/Paper/AI">AI</a></li>
+							<li><a href="/Paper/Statistics">Statistics</a></li>
+						</ul>
+					</li>
+
+					<li class="menu-item menu-item-Python" style="opacity: 1; transform: translateY(0px);"><a href="/">Python</a>
+						<ul>
+							<li><a href="/python/Tensorflow">Tensorflow</a></li>
+							<li><a href="/python/Keras">Keras</a></li>
+							<li><a href="/python/Pytorch">Pytorch</a></li>
+						</ul>
+					</li>
+
+					<li class="menu-item menu-item-Statistics" style="opacity: 1; transform: translateY(0px);"><a href="/">Statistics</a>
+						<ul>
+							<li><a href="/R/Statistics">Statistics</a></li>
+							<li><a href="/R/Machine_Learning">Machine Learning</a></li>
+						</ul>
+					</li>
+
+					<li class="menu-item menu-item-Development Enviroment" style="opacity: 1; transform: translateY(0px);"><a href="/">Development Enviroment</a>
+						<ul>
+							<li><a href="/DE/Github Blog">Github Blog</a></li>
+							<li><a href="/DE/Git">Git</a></li>
+							<li><a href="/DE/Docker">Docker</a></li>
+							<li><a href="/DE/Ubuntu">Ubuntu</a></li>
+							<li><a href="/DE/Java">Java</a></li>
+						</ul>
+					</li>
+
+					<li class="menu-item menu-item-Android" style="opacity: 1; transform: translateY(0px);"><a href="/">Android</a>
+						<ul>
+							<li><a href="/Android/Android">Android</a></li>
+						</ul>
+					</li>
+				</ul>
+		</nav>
+		<div class="header-etc">
+			<nav class="about-search-tag">
+					<ul>
+						{% for page in site.pages %}
+							{% if (page.title == 'About' or page.title =='tags') and page.hide != true %}
+								<li>
+									<a class="page-link" href="{{ page.url | relative_url }}">
+										{{ page.title }}
+									</a>
+								</li>
+							{% endif %}
+						{% endfor %}
+
+						<!-- Search bar -->
+						{% if site.theme_settings.search %}
+						<li>
+						<form action="{{ site.baseurl }}/search.html" method="get">
+							<input type="text" id="search-box" name="query" placeholder="검색" class="">
+							<button type="submit" class="">
+								<i class="fa fa-fw fa-search"></i>
+							</button>
+						</form>
+						</li>
+						{% endif %}
+					</ul>
+			</nav>
+		</div>
+
+<!-- 
+	<div class="branding">
+		{% if site.theme_settings.gravatar %}
+		<a href="{{ site.baseurl }}/">
+			<img class="avatar" src="https://secure.gravatar.com/avatar/{{ site.theme_settings.gravatar }}?s=100" alt=""/>
+		</a>
+		{% elsif site.theme_settings.avatar %}
+		<a href="{{ site.baseurl }}/">
+			<img class="avatar" src="{{ site.baseurl }}/{{ site.theme_settings.avatar }}" alt=""/>
+		</a>
+		{% endif %}
+
+	</div> -->
+</header>
+	

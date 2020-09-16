@@ -1,0 +1,14 @@
+// Post listing
+.paddingbox{
+  padding: $padding-small;
+}
+.category-title {
+  width: 100%;
+  text-align:center;
+
+}
+.posts-list {
+  @extend %padding-regular;
+  clear:left;
+  list-style: none;
+}

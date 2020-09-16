@@ -1,0 +1,128 @@
+# SITE CONFIGURATION
+baseurl: ""
+url: "https://jsk1107.github.io/"
+
+# THEME-SPECIFIC CONFIGURATION
+theme_settings:
+  # Meta
+  title: Computistics
+  avatar: assets/img/avatar.png
+  favicon: assets/favicon.ico
+  gravatar: # Email MD5 hash
+  description: "컴퓨터와 통계학의 만남. Computistics" # used by search engines
+
+  # Header and footer text
+  header_text: >
+     <h3><p>Computer + Statistics = Computistics</p></h3>
+     <h5>블로그 개설 진행중입니다 (포스팅 진행중)</h5>
+  header_text_feature_image:
+  footer_text: >
+   Powered by <a href="https://jekyllrb.com/">Jekyll</a> with <a href="https://github.com/rohanchandra/type-theme">Type Theme</a>
+
+  # Icons
+  rss: true
+  email_address: # Full email address, e.g. "sam@example.com"
+  behance:
+  bitbucket:
+  dribbble:
+  facebook:
+  flickr:
+  gitlab:
+  github: "github.com/tmdrb0707"
+  gitter:
+  google_plus:
+  instagram:
+  linkedin:  # Full URL
+  pinterest:
+  reddit:
+  soundcloud:
+  stack_exchange:  # Full URL
+  steam:
+  tumblr:
+  twitter: "twitter"
+  wordpress:
+  youtube:
+
+  # Scripts
+  google_analytics: UA-105220731-2 # Tracking ID, e.g. "UA-000000-01"
+  disqus_shortname: tmdrb0707-github-io
+  katex: false # Enable if using math markup
+  search: true # Enable the search feature
+  use_motion: true # Enable motion using jquery
+
+  # Localization strings
+  str_follow_on: "Follow on"
+  str_rss_follow: "Follow RSS feed"
+  str_email: "Email"
+  str_next_post: "Next post"
+  str_previous_post: "Previous post"
+  str_next_page: "Next"
+  str_previous_page: "Prev"
+  str_continue_reading: "Continue reading"
+  str_javascript_required_disqus: "Please enable JavaScript to view comments."
+  str_search_no_results: "No results found."
+
+  # Colours, typography and padding
+  # Open the "_sass > base" folder, and open "_variables.scss"
+  google_fonts: "Nanum+Gothic:400,700"
+
+  # Post navigation
+  post_navigation: true
+
+encoding: 'utf-8'
+# Configure the plugin here
+category_path: "category" # <- default value
+category_layout: "category.html" # <- default value
+
+# PAGINATION
+paginate: 5
+paginate_path: "blog/page:num"
+
+animation: true
+
+# BUILD SETTINGS
+markdown: kramdown
+highlighter: rouge
+lsi: false
+excerpt_separator: "\n\n"
+incremental: false
+sass:
+  sass_dir: _sass
+  style: :compressed
+
+plugins:
+  - jekyll-paginate
+  - jekyll-category-pages
+gem:
+    - jekyll-sitemap
+    - jekyll-feed
+    - wdm
+theme: [jekyll-theme-type]
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+
+# Script Vendors.
+# Set a CDN address for the vendor you want to customize.
+# For example
+#    jquery: https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js
+# Be aware that you should use the same version as internal ones to avoid potential problems.
+# Please use the https protocol of CDN files when you enable https on your site.
+vendors:
+  # Internal path prefix. Please do not edit it.
+  _internal: assets/lib
+
+# Local search
+local_search:
+  enable: true
+  # if auto, trigger search by changing input
+  # if manual, trigger search by pressing enter key or search button
+  trigger: auto
+  # show top n results per article, show all results by setting to -1
+  top_n_per_article: 1
+
+# Assets
+css: assets/css
+js: assets/js
+images: assets/images

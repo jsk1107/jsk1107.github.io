@@ -1,0 +1,19 @@
+<aside class="side-bar">
+        <span class="side-bar-head-fontcolor">
+            <h4>
+                {{page.title}}
+            </h4>
+        </span>
+      <ol class="posts-list">
+        {% assign category = page.category | default: page.title %}
+        {% for post in site.categories[category] %}
+          <li>
+            <h5>
+              <a href="{{ site.baseurl }}{{ post.url }}">
+                {{ post.title }}
+              </a>
+            </h5>
+          </li>
+        {% endfor %}
+      </ol>
+</aside>
