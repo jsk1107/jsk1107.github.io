@@ -28,7 +28,7 @@ theme_settings:
   facebook:
   flickr:
   gitlab:
-  github: "github.com/tmdrb0707"
+  github: "github.com/jsk1107"
   gitter:
   google_plus:
   instagram:
@@ -45,7 +45,7 @@ theme_settings:
 
   # Scripts
   google_analytics: UA-105220731-2 # Tracking ID, e.g. "UA-000000-01"
-  disqus_shortname: tmdrb0707-github-io
+  disqus_shortname: jsk1107-github-io
   katex: false # Enable if using math markup
   search: true # Enable the search feature
   use_motion: true # Enable motion using jquery

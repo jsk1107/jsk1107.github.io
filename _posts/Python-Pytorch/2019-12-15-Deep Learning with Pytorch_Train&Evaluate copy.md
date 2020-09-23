@@ -1,17 +1,21 @@
 ---
 layout: post
-title: Tutorial [5] Train&Evaluate
+title: Tutorial [6] Train & Validation
 comments: true
 categories : [Pytorch, Tutorials]
 use_math: true
 ---
 
-딥러닝의 이론적인 내용은 최대한 배제하고 Pytorch를 활용하여 코딩할 수 있도록 필수로 알아야하는 내용에 대해서만 초점을 두었습니다. Pytorch 1.3.1 버전을 기준으로 공식 홈페이지에 나와있는 튜토리얼을 참고하였으며, 가장 기초적인 CNN모델인 ResNet을 활용하여 classification을 직접 설계해보는 단계까지가 Tutorial의 목표입니다.
+
+딥러닝의 이론적인 내용은 최대한 배제하고 Pytorch를 활용하여 코딩할 수 있도록 필수로 알아야하는 내용에 대해서만 초점을 두었습니다. 
+
+Pytorch 1.4 버전을 기준으로 공식 홈페이지에 나와있는 튜토리얼을 참고하였으며, 데이터 로드, CNN모델 설계 학습, 추론까지의 일련의 과정을 경험해보는것이 Tutorial의 목표입니다.
 
 <hr>
 
 ## Train
 
+학습을 진행하는단계는 
 직접 수집한 데이터를 불러오는 단계까지 마무리가 되었습니다. 이제는 본격적으로 학습을 시작해보겠습니다. 학습 네트워크는 pytorch에서 제공해주는 model을 사용하도록 하고 각각의 개별적인 모델에 대해서는 추후 따로 다루도록 하겠습니다.
 
 <hr>
