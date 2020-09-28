@@ -1,73 +1,55 @@
 ---
 layout: post
-title: Tutorial [6] Train & Validation
+title: Tutorial[7] - Train & Validation
 comments: true
 categories : [Pytorch, Tutorials]
 use_math: true
 ---
 
-
 딥러닝의 이론적인 내용은 최대한 배제하고 Pytorch를 활용하여 코딩할 수 있도록 필수로 알아야하는 내용에 대해서만 초점을 두었습니다. 
 
-Pytorch 1.4 버전을 기준으로 공식 홈페이지에 나와있는 튜토리얼을 참고하였으며, 데이터 로드, CNN모델 설계 학습, 추론까지의 일련의 과정을 경험해보는것이 Tutorial의 목표입니다.
+Pytorch 1.4 버전을 기준으로 공식 홈페이지에 나와있는 튜토리얼을 참고하였으며, 데이터 로드, CNN모델 설계, 학습, 추론까지의 일련의 과정을 경험해보는것이 Tutorial의 목표입니다.
 
 <hr>
 
 ## Train
 
-학습을 진행하는단계는 
-직접 수집한 데이터를 불러오는 단계까지 마무리가 되었습니다. 이제는 본격적으로 학습을 시작해보겠습니다. 학습 네트워크는 pytorch에서 제공해주는 model을 사용하도록 하고 각각의 개별적인 모델에 대해서는 추후 따로 다루도록 하겠습니다.
+이전에 학습했던 모든 단계가 선행되어야만 학습을 진행할 수 있다. 여기는 의외로 코딩하기가 쉬운데, 앞서 배웠던것들을 하나씩 나열하기만 하면 된다. 
 
 <hr>
 
-#### model, loss_function, optim 설계
+### 프로세스
 
-고려해야하는 네트워크의 순서는 다음과 같습니다.
-
-1. 학습 네트워크
-2. 손실함수
-3. 최적화 방법
-
-위 세가지를 고려하여 순서대로 코딩해주면 아래와 같습니다.
+학습은 DataLoader를 반복문에 넣어주는것으로 시작한다. 한번의 스탭마다 미리 설정했던 batch_size만큼 img, label 정보를 반환한다. img, label정보는 설계해놓았던 Model에 들어가고, Loss를 구한 후 역전파와 최적화를 순서대로 시행해준다. Scheduler를 만들어두었다면, 마지막에 Scheduler도 시행한다. 
 
 ```python
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-model = torchvision.models.resnet50()
-criterion = torch.nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-03)
-lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=20, gamma=0.1)
-```
-
-* Line 1 : 학습을 시작할때 CPU자원을 사용할 것인지, GPU자원을 사용할 것인지를 체크합니다.
-* Line 2 : 모델을 생성합니다. `torchvision.models`에는 Classification, Detection, segmentation 등 여러 종류의 Offical Model이 있습니다. 
-* Line 3 : 손실함수(Loss Function)를 정합니다. `torch.nn`에 다양한 손실함수가 있습니다. 대표적으로 CrossEntropyLoss와 Softmax를 사용합니다.
-* Line 4 : Optimizer 방법을 정합니다. `torch.optim`에 다양한 최적화 방법이 있으며, 입력되는 옵션들은 상이합니다. Adam의 경우에는 model에서 학습되는 가중치(parameter)를 입력해주어야 합니다. 대표적으로 Adam과 SGD를 사용합니다.
-* Line 5 : Optimizer의 학습률(Learning_rate)을 스탭별로 조정할 수 있습니다. 위의 예시는 20 에폭마다 0.1의 **비율**로 줄이겠다는 의미입니다. 즉, 초기 lr이 1e-04(0.001)이므로 20 에폭이후의 lr은 1e-04(0.0001)가 됩니다.
-
-<hr>
-
-#### Train
-
-학습의 시작은 DataLoader에서 return받은 변수에 for문을 돌려줍니다. 한번의 스탭마다 batch_size만큼의 img, label 정보가 dictionary형태로 들어있습니다. 우선 img, target, model에 device을 붙이고 model의 input으로 img를 입력합니다. ResNet50 네트워크를 타고 input으로 입력된 이미지가 마지막층까지 전달된 후 예측한 label을 return 받습니다. 손실함수는 이 값과 실제 정답 label을 비교하여 loss를 구하게 됩니다. 다음으로 최적화를 하기위해 미분값을 0으로 만들겠다는 `zero_grad()`를 선언한 후 역전파를 시행합니다. 이와같은 과정을 에폭마다 반복하는 코드를 작성하면 아래와 같습니다.
-
-```python
+model.train() # 학습시 반드시 모드 변경을 해줄것.
 for EPOCH in range(1, EPOCHS):
-    model.train()
+    epoch_loss = .0
     for i, (img, target) in enumerate(data_loader):
+        if torch.cuda.is_available():
+            device = 'cuda'
+        else:
+            device = 'cpu'
         img, target = img.to(device), target.to(device)
+
+        optimizer.zero_grad()
         model.to(device)
         out = model(img)
         loss = criterion(out, target)
-
-        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-    print(loss.item())
+
+        epoch_loss += loss.item()
+
+        print(f'loss_iter : {loss.item()}')
+    scheduler.step(np.mean(epoch_loss))
+    print(f'loss_epoch : {epoch_loss / i}')
 ```
 
 <hr>
 
-#### evalutate
+## Validation
 
 학습 이후에는 평가를 진행합니다. 아래 코드 중 `torch.no_grad()` 이 부분은 미분의 추적을 중지하겠다는 의미 입니다. 평가를 할때는 역전파와 같이 미분을 할 필요가 없기 때문에 가용 메모리를 확보하기 위해서 반드시 이 코드를 사용합니다.
 
