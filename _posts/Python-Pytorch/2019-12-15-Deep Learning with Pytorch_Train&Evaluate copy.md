@@ -20,8 +20,6 @@ Pytorch 1.4 버전을 기준으로 공식 홈페이지에 나와있는 튜토리
 
 ### 프로세스
 
-학습은 DataLoader를 반복문에 넣어주는것으로 시작한다. 한번의 스탭마다 미리 설정했던 batch_size만큼 img, label 정보를 반환한다. img, label정보는 설계해놓았던 Model에 들어가고, Loss를 구한 후 역전파와 최적화를 순서대로 시행해준다. Scheduler를 만들어두었다면, 마지막에 Scheduler도 시행한다. 
-
 ```python
 model.train() # 학습시 반드시 모드 변경을 해줄것.
 for EPOCH in range(1, EPOCHS):
@@ -46,6 +44,13 @@ for EPOCH in range(1, EPOCHS):
     scheduler.step(np.mean(epoch_loss))
     print(f'loss_epoch : {epoch_loss / i}')
 ```
+
+1. 학습은 DataLoader를 반복문에 넣어주는것으로 시작한다. 한번의 스탭마다 미리 설정했던 batch_size만큼 img, label 정보를 반환한다. 
+2. 설계해두었던 Model에 img 정보를 인자로 넣어준다.
+3. 설계해두었던 Loss에 model에서 구한 예측셋(Pred)과 정답셋을 인자로 넣어준다. 그리고 역전파를 시행한다.
+4. 설계해두었던 Optimizer에서 step함수를 호출하여 가중치를 갱신한다.
+5. batch단위의 Loss와 Epoch단위의 Loss를 구하기 위해 Loss함수에서 값을 호출하여 저장해둔다.
+6. Epoch이 진행될때마다 설계해두었던 LR_Scheduler에서 step함수를 호출하고 인자로  Epoch단위의 loss를 넣어준다.
 
 <hr>
 
