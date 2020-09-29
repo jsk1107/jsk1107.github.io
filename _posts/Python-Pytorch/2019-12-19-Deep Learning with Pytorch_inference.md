@@ -1,12 +1,14 @@
 ---
 layout: post
-title: Tutorial [7] Inference
+title: Tutorial[8] - Inference
 comments: true
 categories : [Pytorch, Tutorials]
 use_math: true
 ---
 
-딥러닝의 이론적인 내용은 최대한 배제하고 Pytorch를 활용하여 코딩할 수 있도록 필수로 알아야하는 내용에 대해서만 초점을 두었습니다. Pytorch 1.3.1 버전을 기준으로 공식 홈페이지에 나와있는 튜토리얼을 참고하였으며, 가장 기초적인 CNN모델인 ResNet을 활용하여 classification을 직접 설계해보는 단계까지가 Tutorial의 목표입니다.
+딥러닝의 이론적인 내용은 최대한 배제하고 Pytorch를 활용하여 코딩할 수 있도록 필수로 알아야하는 내용에 대해서만 초점을 두었습니다. 
+
+Pytorch 1.4 버전을 기준으로 공식 홈페이지에 나와있는 튜토리얼을 참고하였으며, 데이터 로드, CNN모델 설계, 학습, 추론까지의 일련의 과정을 경험해보는것이 Tutorial의 목표입니다.
 
 <hr>
 

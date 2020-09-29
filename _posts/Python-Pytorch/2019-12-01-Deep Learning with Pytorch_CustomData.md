@@ -51,6 +51,8 @@ dataset - ImageFolder(root_dir=root_dir, transform=transforms, target_transform=
 
 ImageFolder 객체는 root_dir, transform등을 인자를 받을 수 있으며, root_dir에는 최상위 경로를 적어주면 된다.
 
+<br>
+
 ### transform 사용법 :
 
 ImageFolder의 인자로 transform이라는것이 있다. 이것은 이미지를 변형하겠다라는 뜻이다. Shift, Rotate, 형변환 등을 할때 사용된다.
@@ -68,10 +70,14 @@ transform은 반드시 Compose객체에 List형식으로 초기화 해주어야�
 
 - `RandomRotation(int)`: +20, -20 사이에서 랜덤으로 값을 정하여 회전한다.
 - `RandomHorizontalFlip(int)`: 0.5의 확률로 좌우반전을 한다.
+
 - `Resize(tuple(int, int))`: 이미지 크기를 강제로 조정한다. height, width 순서임.
+
 - `ToTensor(None)`: 입력으로 들어오는 Numpy 또는 PIL 자료형을 Tensor 타입으로 변경한다.
 
 이외에도 많은 함수들이 있다. ([여기서 확인](https://pytorch.org/docs/stable/torchvision/transforms.html)). 반드시 설정해주어야할 클래스는 `ToTensor()`, `Normalize()` 가 있다. 나머지는 기호에 맞게 사용하자(영단어의 뜻으로 어떻게 동작할지 유추할 수 있다).
+
+<br>
 
 ### DataLoader 사용법 : 
 
@@ -88,16 +94,20 @@ dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
 DataLoader클래스에서는 초기화된 dataset에서 얼마만큼의 데이터를 꺼내올지(batch), 섞을것인지(shuffle) 등을 정해야한다. 
 
 - `batch_size(int)` : 반복문을 돌때, 한번에 몇개의 이미지를 꺼내올지 정한다.
+
 - `shuffle(bool)` : 한번의 시행이미지를 랜덤하게 섞을지를 정한다.
+
 - `num_worker(int)`: 데이터 I/O를 할 때 사용할 CPU 자원의 수를 지정한다. 멀티 프로세싱의 수를 정하는 개념으로 무조건 높이 설정한다고 좋은것은 아니며, GPU 처리속도와 비교를 통해 튜닝을 해주는것이 좋다.
+
 - `pin_memory(bool)` : 이미지가 Load되기 전, CUDA 메모리에 고정된 메모리 영역을 할당하여 Tensor를 복사를 한다(True하면 빨라진다고 생각하자).
+
 - `collate_fn(func)` : dataset으로부터 리턴된 객체에 대하여 customize한 함수를 적용할때 사용한다.
 
 `sampler`라는 인자도 있는데, 이는 데이터 불균형 문제와 직결되어 있기 때문에 별도로 다루기로 하겠다.
 
 <br>
 
-테스트해보기 : 
+### 테스트해보기 : 
 
 ```python
 import matplotlib.pyplot as plt
@@ -124,6 +134,6 @@ RuntimeError: invalid argument 0: Sizes of tensors must match except in dimensio
 
 이것은 이전에도 학습했듯이, Tensor의 형상이 다를경우 `torch.cat()`을 적용할때 뿜어냈던 Error와 같다.
 
-**즉, 내가 가진 이미지의 Height, Width가 모두 다른경우에는 transform에서 `Resize()`를 적용할여 모든 이미지를 일괄적인 size로 변환해주어야 한다.**
+<br>
 
-<hr>
+**즉, 내가 가진 이미지의 Height, Width가 모두 다른경우에는 transform에서 `Resize()`를 적용할여 모든 이미지를 일괄적인 size로 변환해주어야 한다.**
