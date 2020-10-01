@@ -100,6 +100,11 @@ class CustomDataset(Dataset):
         self.img_path = sort(self.img_path) # 반.드.시.!!!!
         self.category_names = list(set(self.category_names)) # 중복 제거하고 List 형변환
 
+        # Inference 등을 위해 사용할 label_map 파일 생성
+        with open('./label_map.name', 'w', encoding='utf-8') as t:
+            for name in self.category_names:
+                t.write(name + '\n')
+            
         # category 사전 만들기
         for i, category in enumerate(self.category_names):
             self.category_dict[category] = i
@@ -123,7 +128,7 @@ class CustomDataset(Dataset):
         return len(self.img_path)
 ```
 
--  `__init__` :우선 DataSet이 있는 최상위 폴더에 대한 경로 `root_dir`을 인자로 받는다. 우선 각각의 이미지에 대하여 절대경로를 받아서 초기화 해주어야 한다. <br><br> 또한, ImageFolder와 달리 해당 이미지가 어떤 객체를 가리키는지에 대한 메타정보를 이미지의 이름에서 가지고 와야한다. 때문에 파싱하는 작업을 해야하고, 데이터를 수집할때 파싱을 할 수 있는 구분자가 있으면 더욱 편하게 작업할 수 있다. <br><br>파싱된 글자를 통해 `category`라는 딕셔너리에 하나씩 담아준다. Github에 올라온 코드를 보면 이와같은 파싱작업의 수고로움을 덜기위해 **label_map.name** 과 같은 파일을 자주 볼 수 있다. 미리 category에 대한 정보를 담아둔 파일이다(추후 모듈화에서 다루도록 하겠음).
+-  `__init__` :우선 DataSet이 있는 최상위 폴더에 대한 경로 `root_dir`을 인자로 받는다. 우선 각각의 이미지에 대하여 절대경로를 받아서 초기화 해주어야 한다. <br><br> 또한, ImageFolder와 달리 해당 이미지가 어떤 객체를 가리키는지에 대한 메타정보를 이미지의 이름에서 가지고 와야한다. 때문에 파싱하는 작업을 해야하고, 데이터를 수집할때 파싱을 할 수 있는 구분자가 있으면 더욱 편하게 작업할 수 있다. <br><br>파싱된 글자를 통해 `category`라는 딕셔너리에 하나씩 담아준다. Github에 올라온 코드를 보면 이와같은 파싱작업의 수고로움을 덜기위해 **label_map.name** 과 같은 파일을 자주 볼 수 있다. 미리 category에 대한 정보를 담아둔 파일이다.
 
 <br>
 
@@ -132,6 +137,23 @@ class CustomDataset(Dataset):
 <br>
 
 -  `__len__` :  `self.img_path`에는 `root_dir`경로 하위에 있는 모든 img에 대한 경로가 들어있다. 여기에서 총 img가 몇개인지만 return한다.
+
+<br>
+
+### label_map :
+
+종종 github에서 남들이 만들어놓은 소스를 보면 label_map.name 과 같은 파일일 볼 수 있을것이다. 자신이 학습시킬 class의 Label명을 미리 적어놓은 파일이다.
+
+사용자가 미리 데이터를 파악할 수 있다면 생성해두는 편이 좋고, 그렇지 않다면 위처럼 CustomDataSet을 초기화할때 생성해두는것이 정신건강에 이롭다.
+
+    ```Shell
+    # label_map.name
+    dog
+    cat
+    horse
+    house
+    ...
+    ```
 
 <br>
 
