@@ -7,23 +7,107 @@ categories : [AI Paper Review, Faster R-CNN]
 use_math: true
 ---
 
-### 1. 실시간 객체 검출을 향해
+R-CNN, Fast R-CNN에서 Region Proposal을 구하는 방법은 Selective Search를 통해 구했다.
 
-논문의 제목은 정말로 **Faster R-CNN Towards Real-Time Object Detection with Region Proposal Netwoks[^0]**입니다. 실제로 Faster R-CNN이 등장한 이후에서야 One-Stage 알고리즘이 등장했으며 실시간 Object Detection의 문을 두드리게 되는 시발점이 되게 됩니다.
+하지만 이 방법은 CPU를 통한 연산이었으며 신경망에 포함되어있지 않았다. 따라서 모든 Pixel에 대해서 연산을 하고 병합을 해야하기 때문에 가장 큰 병목이었다. 
 
-R-CNN, Fast R-CNN에서 Region Proposal을 구하는 방법은 Selective Search를 통해 구했습니다. 하지만 이 방법은 CPU를 통한 연산이었으며, 모든 Pixel에 대해서 연산을 하고 병합을 해야하기 때문에 Bottlenect이었습니다.
+Faster R-CNN은 이러한 병목을 해결하였으며, 논문의 제목답게 **Faster R-CNN Towards Real-Time Object Detection with Region Proposal Netwoks**로써 실시간 탐지가 가능하였다.
 
-Faster R-CNN의 가장 큰 특징은 Region Propoal을 네트워크에 포함시키면서 CPU연산을 GPU연산으로 대체하였으며, Anchor Box를 도입하여 Region Proposal을 빠르게 구할 수 있었습니다. 이로써 진정한 의미의 end-to-end를 구현하면서 실시간 객체 검출에 한걸음 다가가게 된것입니다.
+이 병목을 어떻게 해결하였을까??
 
-### 2. Faster R-CNN
+## Concept
 
-Faster R-CNN은 두가지 모듈로 구성이 되어있습니다. 첫번째는 Region Proposal을 만드는 영역(RPN), 두번째는 Fast R-CNN 영역입니다. RPN모듈은 "attention" 메커니즘을 차용했기 때문에 Fast R-CNN모듈이 어떠한 영역에 집중해야하는지를 잘 알려줍니다.
+Faster R-CNN은 두가지 모듈로 구성이 되어있다. 
+
+1. Region Proposal을 만드는 영역.(RPN)
+2. Fast R-CNN 영역.
+
+신경망이 두개의 모듈을 포함하고 있기 때문에, 모듈간 FeatureMap의 연결을 어떠한 방법으로 할것인지도 고려해야한다. 논문에서는 3가지 방법을 제안하였다.
+
+1. Alternating training.
+2. Approximate joint trainning
+3. Non-Approximate joint tranning
 
 <p align="center">
 <img width="400" height="400" alt="Faster_R_CNN" src="https://www.dropbox.com/s/8040npeg82p7vc2/Faster_R_CNN.PNG?raw=1">
 </p>
 
-#### 2.1 Region Proposal Networks(RPN)
+
+
+### 1. Region Proposal Networks(RPN)
+
+Faster R-CNN의 가장 큰 특징은 **Anchor Box 개념을 도입하여 기존 SS를 대체**하였으며, **Region Proposal을 신경망에 포함**시켰다는 것이다.
+
+신경망 내부에서 역전파를 통해 연산을 수행하게 되므로 Bounding Box Regression을 매우 빠르게 수행할 수 있다.
+
+또한 CPU연산을 GPU연산으로 대체가능할 수도 있기 때문에, GPU 환경에서는 더욱 빠른 속도를 획득할 수 있던 것이다. 
+
+RPN도 네트워크이기 때문에 손실함수가 필요하다. 여기서 사용하는 손실함수는 아래와 같다.
+
+$$
+    L({p_{i}}, {t_{i}}) = \frac{1}{N_{cls}}\sum_{i}L_{cls}(p_{i}, p{i}^{*}) + \lambda\frac{1}{N_{reg}}\sum_{i}p_{i}^{*}L_{reg}(t_{i},t_{i}^{*})
+$$
+
+Classification Loss에서는 RoI가 객체인지 아닌지를 추정하며, Regression Loss에서는 좌표값은 추정하게 된다. 
+
+자세한 내용은 **Appendix** 참조
+
+### 2. Fast RCNN
+
+RPN을 수행한 후 넘겨받은 좌표값을 활용하여 ROI Pooling을 수행하고, Classification과 Box Regression을 수행한다.
+
+기존 Fast R-CNN에서 하던 방법과 동일하게 동작한다. 즉, 여기에서도 손실함수가 등장한다.
+
+$$
+    L(p, u, t^{u}, v) = L_{cls}(p,u) + \lambda[u\geq1]L_{loc}(t^{u},v)
+$$
+
+
+여기까지 읽어보면 무언가 헷갈리는점이 발생한다.
+
+RPN에서도 Loss Function이 존재하고, Fast RCNN에서도 Loss Function이 존재한다는 점이다.
+
+전혀 이상한것이 아니다. 왜냐하면 이것은 **네트워크가 2개**이기 때문이다.
+
+RPN영역 + Fast RCNN 영역을 하나로 묶어서 Faster-RCNN이라고 부른것이므로 각각의 영역에서 Loss Function이 존재하는것은 당연하다.
+
+때문에 Two-Stage 모델이라고 부른다.
+
+자세한 내용은 Appendix 참조
+
+### 3. Sharing Features for RPN and Fast R-CNN
+
+RPN과 Fast R-CNN 두 네트워크를 독립적으로 학습을 진행하는것이 아닌라 convolutional layers를 공유하는 형태로 학습을 진행하게 된다.
+
+1. Alternating training.
+
+우선 RPN 학습을 진행한다. 획득한 Proposals로부터 Fast R-CNN을 학습한다. 
+
+Fast R-CNN의 학습이 끝난 후 Bouding Box Regression을 통해 수정된 좌표값을 통해 RPN의 좌표값을 초기화한다(Update).
+ 
+그리고 이 과정을 반복한다. 논문에서는 이 방법으로 모든 실험을 진행하였으나 과정이 복잡하여 더이상 사용하지 않는 방법이다.
+
+2. Approximate joint trainning
+
+RPN와 Fast R-CNN 네트워크를 하나의 네트워크로 병합한다.
+
+순전파 진행시 RPN으로 부터 획득한 Proposals을 고정된것으로(상수취급) Fast R-CNN 영역에 좌표정보를 전달해주게 된다. 넘겨받은 좌표정보를 이용하여 Fast R-CNN의 Loss를 계산하게 됩니다. 이때 RPN에서 구했던 Loss를 같이 합쳐서 병합된 Loss를 구합니다.
+
+이제 RPN Loss와 Fast R-CNN Loss가 합쳐진 신호가 역전파를 진행하면, Fast R-CNN영역, RPN영역, CNN영역까지 모든 Layer에 가중치를 공유할 수 있습니다(**RoI Pooling을 통해 얻은 k개의 Anchor간 공유가 아니라 Anchor내 공유!!**).
+
+1번 방법보다 25~50%가량 학습 속도를 단축시켰다고 합니다.(Pytorch 내부 코드 형태)
+
+3. Non-Approximate joint tranning
+
+RPN으로부터 예측한 Bounding Box정보는 함수의 형태입니다. Fast R-CNN에서 역전파를 진행했을 때, Bounding Box정보에 대한 값을 미분하여 값을 획득하여 업데이트를 해준다면 보다 정확한 좌표정보를 얻을 수 있을것입니다. 반면 2번의 방법은 Bounding Box 정보를 고정된 값(상수) 형태로 Fast R-CNN에 넘겨주기 때문에 비교적 정확한 값을 얻을 수 없습니다.
+
+이 방법을 사용하려면 Bounding Box에 대해 미분이 가능한 RoI Pooling layer가 필요로 하며 RoI warping이라는 방법을 사용하여 해결할 수 있다고만 제시하였습니다.
+
+
+
+## Appendix
+
+### Region Proposal Networks(RPN)
 
 RPN은 Anchor라고 부르는 사각형 모양의 Box를 slinding window방식으로 탐색을 합니다. Anchor는 Size, Aspect Ratio가 각기 다른 k개의 Anchor들이 있습니다. 각각의 Anchor를 통해 4개의 좌표정보를 가진 reg layer와 2개의 label을 가진 cls layer를 획득합니다.
 
@@ -60,27 +144,7 @@ Box Regression을 보면 기존 Fast R-CNN과 다른점이 하나 있습니다. 
 
 각각의 mini-batch는 1장의 이미지로부터 256개의 Anchor를 획득합니다. 128개는 Positive, 128개는 Negative로 1:1비율로 선정합니다. 만약 Positive Anchor가 128개가 안된다면, Negative Anchor를 추가합니다.(**이 방법을 적용하더라도 Positive Anchor의 수는 압도적으로 적다. 이 방법을 보완하기위해 RetinaNet탄생**)
 
-### 2.2 Sharing Features for RPN and Fast R-CNN
 
-RPN과 Fast R-CNN 두 네트워크를 독립적으로 학습을 진행하는것이 아닌라 convolutional layers를 공유하는 형태로 학습을 진행하게 됩니다. 학습을 진행하는 방법으로는 3가지 방법을 제시하고 있습니다.
-
-1. Alternating training.
-
-우선 RPN 학습을 진행하고 이로부터 획득한 Proposals로부터 Fast R-CNN을 학습합니다. 다시 Fast R-CNN으로 부터 조정된 네트워크가 RPN을 초기화하는데 사용됩니다(Update). 그리고 이 과정을 반복합니다. 논문에서는 이 방법으로 모든 실험을 진행하였습니다(과정이 복잡하여 더이상 사용하지 않음).
-
-2. Approximate joint trainning
-
-RPN와 Fast R-CNN 네트워크를 하나의 네트워크로 병합합니다. 순전파 진행시 RPN으로 부터 획득한 Proposals은 고정된것으로(상수취급) Fast R-CNN 영역에 좌표정보를 전달해주게 됩니다. 넘겨받은 좌표정보를 이용하여 Fast R-CNN의 Loss를 계산하게 됩니다. 이때 RPN에서 구했던 Loss를 같이 합쳐서 병합된 Loss를 구합니다.
-
-이제 RPN Loss와 Fast R-CNN Loss가 합쳐진 신호가 역전파를 진행하면, Fast R-CNN영역, RPN영역, CNN영역까지 모든 Layer에 가중치를 공유할 수 있습니다(**RoI Pooling을 통해 얻은 k개의 Anchor간 공유가 아니라 Anchor내 공유!!**).
-
-1번 방법보다 25~50%가량 학습 속도를 단축시켰다고 합니다.(Pytorch 내부 코드 형태)
-
-3. Non-Approximate joint tranning
-
-RPN으로부터 예측한 Bounding Box정보는 함수의 형태입니다. Fast R-CNN에서 역전파를 진행했을 때, Bounding Box정보에 대한 값을 미분하여 값을 획득하여 업데이트를 해준다면 보다 정확한 좌표정보를 얻을 수 있을것입니다. 반면 2번의 방법은 Bounding Box 정보를 고정된 값(상수) 형태로 Fast R-CNN에 넘겨주기 때문에 비교적 정확한 값을 얻을 수 없습니다.
-
-이 방법을 사용하려면 Bounding Box에 대해 미분이 가능한 RoI Pooling layer가 필요로 하며 RoI warping이라는 방법을 사용하여 해결할 수 있다고만 제시하였습니다.
 
 ### 3. Implementation Details
 
