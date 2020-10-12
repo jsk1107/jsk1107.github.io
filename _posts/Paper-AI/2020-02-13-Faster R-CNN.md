@@ -91,7 +91,9 @@ Fast R-CNN의 학습이 끝난 후 Bouding Box Regression을 통해 수정된 �
 
 RPN와 Fast R-CNN 네트워크를 하나의 네트워크로 병합한다.
 
-순전파 진행시 RPN으로 부터 획득한 Proposals을 고정된것으로(상수취급) Fast R-CNN 영역에 좌표정보를 전달해주게 된다. 넘겨받은 좌표정보를 이용하여 Fast R-CNN의 Loss를 계산하게 됩니다. 이때 RPN에서 구했던 Loss를 같이 합쳐서 병합된 Loss를 구합니다.
+순전파 진행시 RPN으로 부터 획득한 Proposals을 고정된것으로(상수취급) Fast R-CNN 영역에 좌표정보를 전달해주게 된다.
+
+넘겨받은 좌표정보를 이용하여 Fast R-CNN의 Loss를 계산하게 된다. 이때 RPN에서 구했던 Loss를 같이 합쳐서 병합된 Loss를 구합니다.
 
 이제 RPN Loss와 Fast R-CNN Loss가 합쳐진 신호가 역전파를 진행하면, Fast R-CNN영역, RPN영역, CNN영역까지 모든 Layer에 가중치를 공유할 수 있습니다(**RoI Pooling을 통해 얻은 k개의 Anchor간 공유가 아니라 Anchor내 공유!!**).
 
